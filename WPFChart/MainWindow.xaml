@@ -1,7 +1,8 @@
 ﻿<Window x:Class="WPFChart.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:chartcontrols="clr-namespace:ChartControls;assembly=ChartControls">
     <Grid>
-
+        <chartcontrols:Chart x:Name="myChart"/>
     </Grid>
 </Window>

@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFChart", "WPFChart\WPFChart.csproj", "{A5B0DE17-562D-4B60-958F-9A4C9E0B5603}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChartControls", "ChartControls\ChartControls.csproj", "{A07566CD-62C4-4C1B-978F-D16BB3362AF5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChartControls", "ChartControls\ChartControls.csproj", "{E433A7C6-6B7E-4EC2-A713-FA88240F8738}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{A5B0DE17-562D-4B60-958F-9A4C9E0B5603}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5B0DE17-562D-4B60-958F-9A4C9E0B5603}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5B0DE17-562D-4B60-958F-9A4C9E0B5603}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A07566CD-62C4-4C1B-978F-D16BB3362AF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A07566CD-62C4-4C1B-978F-D16BB3362AF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A07566CD-62C4-4C1B-978F-D16BB3362AF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A07566CD-62C4-4C1B-978F-D16BB3362AF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E433A7C6-6B7E-4EC2-A713-FA88240F8738}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E433A7C6-6B7E-4EC2-A713-FA88240F8738}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E433A7C6-6B7E-4EC2-A713-FA88240F8738}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E433A7C6-6B7E-4EC2-A713-FA88240F8738}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
