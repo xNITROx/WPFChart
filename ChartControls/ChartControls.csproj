@@ -51,12 +51,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="CommonModels\DataModels\ChartData.cs" />
-    <Compile Include="CommonModels\ChartPainter\ChartPainters.cs" />
+    <Compile Include="CommonModels\DataModels\SeriesDrawingGeometry.cs" />
+    <Compile Include="CommonModels\Extentions.cs" />
+    <Compile Include="CommonModels\Series\ChartSeries.cs" />
+    <Compile Include="CommonModels\Series\LineSeries.cs" />
+    <Compile Include="CommonModels\DataModels\SeriesValue.cs" />
+    <Compile Include="CommonModels\Series\ChartSeriesCollection.cs" />
     <Compile Include="CommonModels\Enums.cs" />
-    <Compile Include="Contracts\IChartData.cs" />
-    <Compile Include="Contracts\IChartPainter.cs" />
-    <Compile Include="Contracts\IDataSource.cs" />
+    <Compile Include="Contracts\ISeriesData.cs" />
+    <Compile Include="Contracts\IChartSeries.cs" />
     <Compile Include="Controls\BaseChartControl.cs" />
   </ItemGroup>
   <ItemGroup>

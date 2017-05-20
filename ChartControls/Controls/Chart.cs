@@ -1,31 +1,31 @@
-﻿using ChartControls.Contracts;
-using System.Windows.Media;
-using System.Collections.Generic;
-using ChartControls.CommonModels;
+﻿using System.Collections.Generic;
+using System.Windows;
+using ChartControls.CommonModels.DataModels;
+using ChartControls.CommonModels.Series;
+using ChartControls.Controls;
 
 namespace ChartControls
 {
     public sealed class Chart : BaseChartControl
     {
-        private IDataSource _dataSource;
         private ChartCanvas _canvas;
 
 
-        public IDataSource DataSource
-        {
-            get { return _dataSource; }
-            private set
-            {
-                if (_dataSource != null)
-                    _dataSource.OnDataAdded -= DataSource_OnDataAdded;
-                if (value != null)
-                    value.OnDataAdded += DataSource_OnDataAdded;
+        #region Dependency Properties
 
-                _dataSource = value;
-            }
+        public ChartSeriesCollection Series
+        {
+            get => (ChartSeriesCollection)GetValue(SeriesProperty);
+            set => SetValue(SeriesProperty, value);
+        }
+        public static readonly DependencyProperty SeriesProperty =
+            DependencyProperty.Register("Series", typeof(ChartSeriesCollection), typeof(Chart), new PropertyMetadata(default(ChartSeriesCollection), SeriesChangedCallback));
+        private static void SeriesChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+           // TODO: handle series changed and change update logic
         }
 
-        public ChartPainters ChartPainters { get; set; }
+        #endregion
 
 
         public Chart()
@@ -39,21 +39,21 @@ namespace ChartControls
             _canvas = this.GetTemplateChild("CHART_CANVAS") as ChartCanvas;
         }
 
-        private void DataSource_OnDataAdded(object sender, IEnumerable<IChartData> newData)
+        public void UpdateSeries()
         {
-            if (ChartPainters != null && ChartPainters.Count > 0 && _canvas != null)
+            if (_canvas == null || Series == null || Series.Count == 0)
+                return;
+
+            List<SeriesDrawingGeometry> seriesDrawingGeometrys = new List<SeriesDrawingGeometry>();
+            foreach (var series in Series)
             {
-                IDataSource dataSource = (IDataSource)sender;
-
-                Geometry chartGeo = null;
-                foreach (var painter in ChartPainters)
-                    if (chartGeo == null)
-                        chartGeo = painter.Draw(dataSource);
-                    else
-                        chartGeo = new CombinedGeometry(chartGeo, painter.Draw(dataSource));
-
-                _canvas.DrawChart(chartGeo);
+                var newGeo = series.GetGeometry();
+                if (newGeo == null)
+                    continue;
+                seriesDrawingGeometrys.Add(newGeo);
             }
+
+            _canvas.DrawSeries(seriesDrawingGeometrys.ToArray());
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace ChartControls.CommonModels
+﻿using System;
+
+namespace ChartControls.CommonModels
 {
     public enum Period : long
     {
@@ -11,5 +13,15 @@
         Week = 6_048_000_000_000,
         Month = 25_920_000_000_000,
         Year = 315_360_000_000_000
+    }
+
+    public static class PeriodExtentions
+    {
+        public static DateTime Round(this Period period, long ticks, int count = 1)
+        {
+            double divider = (long)period * count;
+            long perTicks = (long)(Math.Floor(ticks / divider) * divider);
+            return new DateTime(perTicks);
+        }
     }
 }

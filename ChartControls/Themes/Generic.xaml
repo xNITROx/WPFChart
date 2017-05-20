@@ -1,41 +1,42 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:ChartControls">
-
+    xmlns:local="clr-namespace:ChartControls"
+    xmlns:series="clr-namespace:ChartControls.CommonModels.Series"
+    xmlns:controls="clr-namespace:ChartControls.Controls">
 
     <Style TargetType="{x:Type local:Chart}">
+        <Setter Property="ClipToBounds" Value="True" />
+        <Setter Property="Series">
+            <Setter.Value>
+                <series:ChartSeriesCollection>
+                    <series:LineSeries />
+                </series:ChartSeriesCollection>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Chart}">
-                    <Grid Background="{TemplateBinding Background}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                        <local:ChartCanvas x:Name="CHART_CANVAS" Grid.Row="0" Grid.Column="0" Background="{TemplateBinding Background}" />
+                            <controls:ChartCanvas x:Name="CHART_CANVAS" Grid.Row="0" Grid.Column="0" />
 
-                        <!--<HorizontalSlider x:Name="HOR_SLIDER" Grid.Row="1" Grid.Column="0" />-->
-                        <!--<VerticalSlider x:Name="VER_SLIDER" Grid.Row="0" Grid.Column="1" />-->
-                    </Grid>
+                            <!--<HorizontalSlider x:Name="HOR_SLIDER" Grid.Row="1" Grid.Column="0" />-->
+                            <!--<VerticalSlider x:Name="VER_SLIDER" Grid.Row="0" Grid.Column="1" />-->
+                        </Grid>
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-
-    <Style TargetType="{x:Type local:ChartCanvas}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:ChartCanvas}">
-                    <Grid x:Name="CANVAS_LAYERS_CONTAINTER" />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
 </ResourceDictionary>
