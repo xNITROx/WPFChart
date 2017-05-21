@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Controls\Chart.cs" />
     <Compile Include="Controls\ChartCanvas.cs" />
+    <Compile Include="Controls\HorizontalRangeSlider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
