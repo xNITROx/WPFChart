@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using ChartControls.CommonModels.DataModels;
+using System.Windows.Media;
 using ChartControls.Contracts;
 
 namespace ChartControls.CommonModels.Series
@@ -8,7 +8,7 @@ namespace ChartControls.CommonModels.Series
     public abstract class ChartSeries : IChartSeries
     {
         private bool _isUpdated = false;
-        private SeriesDrawingGeometry _geometry;
+        private Drawing _geometry;
 
 
         public ObservableCollection<ISeriesData> Data { get; } = new ObservableCollection<ISeriesData>();
@@ -21,7 +21,7 @@ namespace ChartControls.CommonModels.Series
         }
 
 
-        public SeriesDrawingGeometry GetGeometry()
+        public Drawing GetGeometry()
         {
             if (IsVisible)
             {
@@ -35,10 +35,10 @@ namespace ChartControls.CommonModels.Series
                     return _geometry;
             }
 
-            return new SeriesDrawingGeometry();
+            return new GeometryDrawing();
         }
 
-        protected abstract SeriesDrawingGeometry DrawGeometry();
+        protected abstract Drawing DrawGeometry();
 
         private void Data_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {

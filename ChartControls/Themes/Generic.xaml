@@ -7,13 +7,6 @@
 
     <Style TargetType="{x:Type local:Chart}">
         <Setter Property="ClipToBounds" Value="True" />
-        <Setter Property="Series">
-            <Setter.Value>
-                <series:ChartSeriesCollection>
-                    <series:LineSeries />
-                </series:ChartSeriesCollection>
-            </Setter.Value>
-        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Chart}">

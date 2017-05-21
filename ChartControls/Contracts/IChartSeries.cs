@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using ChartControls.CommonModels.DataModels;
+using System.Windows.Media;
 
 namespace ChartControls.Contracts
 {
@@ -8,6 +8,6 @@ namespace ChartControls.Contracts
         ObservableCollection<ISeriesData> Data { get; }
         bool IsVisible { get; set; }
 
-        SeriesDrawingGeometry GetGeometry();
+        Drawing GetGeometry();
     }
 }

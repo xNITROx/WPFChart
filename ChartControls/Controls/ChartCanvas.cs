@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using ChartControls.CommonModels;
@@ -9,30 +10,35 @@ namespace ChartControls.Controls
     internal sealed class ChartCanvas : UIElement
     {
         private readonly GeometryDrawing _pointerDrawing;
-        private SeriesDrawingGeometry[] _seriesDrawingGeometrys;
+        private DrawingGroup _seriesDrawingGroup;
 
 
         public ChartCanvas()
         {
-            _pointerDrawing = new GeometryDrawing(Brushes.Transparent, new Pen(Brushes.Black, 0.11) { DashStyle = new DashStyle(new double[] { 50 }, 0) }, Geometry.Empty);
+            _pointerDrawing = new GeometryDrawing(Brushes.Transparent,
+                new Pen(Brushes.DimGray, 0.11) { DashStyle = new DashStyle(new double[] { 50 }, 0) }, null);
+            _seriesDrawingGroup = new DrawingGroup();
             this.MouseMove += ChartCanvas_MouseMove;
             this.MouseLeave += ChartCanvas_MouseLeave;
         }
 
-        public void DrawSeries(SeriesDrawingGeometry[] seriesGeometry)
+        public void DrawSeries(Drawing[] seriesDrawings)
         {
-            _seriesDrawingGeometrys = seriesGeometry;
-            this.InvalidateVisual();
+            _seriesDrawingGroup.Children.Clear();
+            foreach (var drawing in seriesDrawings)
+                _seriesDrawingGroup.Children.Add(drawing);
         }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            drawingContext.DrawRectangle(Brushes.Gray, new Pen(), new Rect(this.RenderSize));
+            // draw background layer for mouse handle
+            drawingContext.DrawRectangle(Brushes.Transparent, new Pen(), new Rect(this.RenderSize));
 
-            if (_seriesDrawingGeometrys != null && _seriesDrawingGeometrys.Length > 0)
-                foreach (var geo in _seriesDrawingGeometrys)
-                    drawingContext.DrawGeometry(geo.Brush, geo.Pen, geo.Geometry);
+            // draw series
+            if (_seriesDrawingGroup != null)
+                drawingContext.DrawDrawing(_seriesDrawingGroup);
 
+            // draw cross lines
             drawingContext.DrawDrawing(_pointerDrawing);
 
             base.OnRender(drawingContext);
@@ -40,7 +46,7 @@ namespace ChartControls.Controls
 
         private void ChartCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            Point startPoint, endPoint, mouse = e.GetPosition(this);
+            Point startPoint, endPoint, mouse = Mouse.GetPosition(this);
             string lines = string.Empty;
 
             startPoint = new Point(0, mouse.Y);
@@ -55,7 +61,7 @@ namespace ChartControls.Controls
 
         private void ChartCanvas_MouseLeave(object sender, MouseEventArgs e)
         {
-            _pointerDrawing.Geometry = Geometry.Empty;
+            _pointerDrawing.Geometry = null;
         }
     }
 }

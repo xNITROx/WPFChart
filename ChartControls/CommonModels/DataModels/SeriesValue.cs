@@ -4,7 +4,7 @@ namespace ChartControls.CommonModels.DataModels
 {
     public struct SeriesValue : ISeriesData
     {
-        public long ValueX { get; }
+        public long ValueX { get; set; }
 
         public double[] Data { get; }
         public string[] Labels { get; }
