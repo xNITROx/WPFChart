@@ -12,6 +12,7 @@ namespace ChartControls
     public sealed class Chart : BaseChartControl
     {
         private ChartCanvas _canvas;
+        private HorizontalRangeSlider _horizontalSlider;
         private readonly ChartSettings _settings;
 
 
@@ -49,6 +50,7 @@ namespace ChartControls
         {
             base.OnApplyTemplate();
             _canvas = this.GetTemplateChild("CHART_CANVAS") as ChartCanvas;
+            _horizontalSlider = this.GetTemplateChild("HOR_SLIDER") as HorizontalRangeSlider;
         }
 
         public void UpdateSeries()
@@ -84,6 +86,9 @@ namespace ChartControls
             if (e.NewItems != null)
                 foreach (ISeriesData data in e.NewItems)
                     _settings.Scope.UpdateBy(data);
+
+            _horizontalSlider.Min = _settings.Scope.MinX;
+            _horizontalSlider.Max = _settings.Scope.MaxX;
         }
     }
 }

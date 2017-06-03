@@ -54,6 +54,7 @@
     <Compile Include="CommonModels\DataModels\ChartSettings.cs" />
     <Compile Include="CommonModels\DataModels\Scope.cs" />
     <Compile Include="CommonModels\Extentions.cs" />
+    <Compile Include="CommonModels\RangeValuesFormatter.cs" />
     <Compile Include="CommonModels\Series\ChartSeries.cs" />
     <Compile Include="CommonModels\Series\LineSeries.cs" />
     <Compile Include="CommonModels\DataModels\SeriesValue.cs" />

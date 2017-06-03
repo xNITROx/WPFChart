@@ -40,7 +40,7 @@ namespace WPFChart
 
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            App.Current.Dispatcher.Invoke(() => OnOnData(new SeriesValue((long)GetRandom(), GetRandom())));
+            App.Current?.Dispatcher.Invoke(() => OnOnData(new SeriesValue((long)GetRandom(), GetRandom())));
         }
 
         private double GetRandom()

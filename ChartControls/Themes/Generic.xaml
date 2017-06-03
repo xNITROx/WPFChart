@@ -32,13 +32,8 @@
     </Style>
 
     <Style TargetType="controls:HorizontalRangeSlider">
-        <Setter Property="SliderFill" Value="CornflowerBlue" />
-        
-        <Setter Property="Min" Value="0" />
-        <Setter Property="Max" Value="100" />
-        <Setter Property="From" Value="10" />
-        <Setter Property="To" Value="30" />
-        <Setter Property="Height" Value="20" />
+        <Setter Property="SliderFill" Value="#A56495ED" />
+        <Setter Property="Height" Value="35" />
     </Style>
 
 </ResourceDictionary>

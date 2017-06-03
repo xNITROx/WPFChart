@@ -7,6 +7,6 @@
         <chartcontrols:Chart x:Name="myChart" />
         <TextBlock Text="{Binding ElementName=myChart, Path=Series[0].Data.Count}" 
                    VerticalAlignment="Top" HorizontalAlignment="Left"
-                   FontSize="18" Foreground="Black" Background="DarkGray" Padding="4" Opacity="0.5"/>
+                   FontSize="21" Foreground="Black" Background="{Binding ElementName=myChart, Path=Series[0].Brush}" Padding="4" Opacity="0.77" />
     </Grid>
 </Window>
