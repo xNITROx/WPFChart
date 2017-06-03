@@ -51,6 +51,8 @@ namespace ChartControls
             base.OnApplyTemplate();
             _canvas = this.GetTemplateChild("CHART_CANVAS") as ChartCanvas;
             _horizontalSlider = this.GetTemplateChild("HOR_SLIDER") as HorizontalRangeSlider;
+            if(_horizontalSlider != null)
+                _horizontalSlider.ViewScopeChanged += HorSlider_ViewScopeChanged;
         }
 
         public void UpdateSeries()
@@ -89,6 +91,10 @@ namespace ChartControls
 
             _horizontalSlider.Min = _settings.Scope.MinX;
             _horizontalSlider.Max = _settings.Scope.MaxX;
+        }
+
+        private void HorSlider_ViewScopeChanged(object sender, Scope viewScope)
+        {
         }
     }
 }

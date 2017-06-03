@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using ChartControls.CommonModels;
+using ChartControls.CommonModels.DataModels;
 
 namespace ChartControls.Controls
 {
@@ -17,7 +18,7 @@ namespace ChartControls.Controls
         private readonly GeometryDrawing _sliderDrawing;
         private readonly GeometryDrawing _pointsDrawing;
 
-
+        public event EventHandler<Scope> ViewScopeChanged;
         public bool IsMouseOverSlider => _sliderDrawing.Geometry?.FillContains(Mouse.GetPosition(this)) ?? false;
 
 
@@ -315,12 +316,19 @@ namespace ChartControls.Controls
         {
             var slider = (HorizontalRangeSlider)d;
             slider.UpdateSlider();
+            slider.OnViewScopeChanged();
         }
 
         private static void ToPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var slider = (HorizontalRangeSlider)d;
             slider.UpdateSlider();
+            slider.OnViewScopeChanged();
+        }
+
+        protected virtual void OnViewScopeChanged()
+        {
+            ViewScopeChanged?.Invoke(this, new Scope(From, To, 0, 0));
         }
     }
 }

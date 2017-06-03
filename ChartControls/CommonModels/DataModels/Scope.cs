@@ -9,6 +9,7 @@ namespace ChartControls.CommonModels.DataModels
         public double MinY { get; private set; }
         public double MaxY { get; private set; }
 
+
         public Scope()
         {
             MinX = MinY = double.MaxValue;
@@ -32,6 +33,11 @@ namespace ChartControls.CommonModels.DataModels
                 if (dataY < MinY) MinY = dataY;
                 if (dataY > MaxY) MaxY = dataY;
             }
+        }
+
+        public override string ToString()
+        {
+            return $"X: [{MinX}; {MaxX}], Y: [{MinY}; {MaxY}]";
         }
     }
 }
