@@ -8,6 +8,7 @@
     <SolidColorBrush x:Key="BlueBrush" Color="#0FC5F5" />
     <SolidColorBrush x:Key="GreenBrush" Color="#0FF904" />
     <SolidColorBrush x:Key="RedBrush" Color="#EE0606" />
+    <SolidColorBrush x:Key="OrangeBrush" Color="#FF9A37" />
 
     <Style TargetType="chartControls:Chart">
         <Setter Property="Background" Value="{StaticResource DarkBlueBrush}" />

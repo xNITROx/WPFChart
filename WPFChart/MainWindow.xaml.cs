@@ -31,9 +31,11 @@ namespace WPFChart
             }
 
             InitializeComponent();
+            SolidColorBrush brush = (SolidColorBrush)Application.Current.Resources["OrangeBrush"];
             myChart.Series.Add(new LineSeries
             {
-                Brush = (Brush)App.Current.Resources["PurpleBrush"],
+                Brush = brush,
+                Fill = new LinearGradientBrush(Color.FromArgb(128, brush.Color.R, brush.Color.G, brush.Color.B), Colors.Transparent, 90),
                 Width = 2
             });
             _dataGenerator.Start();

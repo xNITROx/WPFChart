@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using ChartControls.CommonModels;
@@ -15,14 +16,33 @@ namespace ChartControls.Controls
         private bool _isSliderGrabbed;
         private Dock _grabType;
         private Point _mouseDownPoint;
+        private double _stuckDiff;
+        private bool _saveStuckProportion = true;
         private readonly GeometryDrawing _sliderDrawing;
         private readonly GeometryDrawing _pointsDrawing;
+
 
         public event EventHandler<Scope> ViewScopeChanged;
         public bool IsMouseOverSlider => _sliderDrawing.Geometry?.FillContains(Mouse.GetPosition(this)) ?? false;
 
 
         #region Dependecy Properties
+
+        public static readonly DependencyProperty IsStuckToLeftProperty = DependencyProperty.Register(
+            "IsStuckToLeft", typeof(bool), typeof(HorizontalRangeSlider), new PropertyMetadata(default(bool), IsStuckToLeftChanged));
+        public bool IsStuckToLeft
+        {
+            get { return (bool)GetValue(IsStuckToLeftProperty); }
+            set { SetValue(IsStuckToLeftProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsStuckToRightProperty = DependencyProperty.Register(
+            "IsStuckToRight", typeof(bool), typeof(HorizontalRangeSlider), new PropertyMetadata(default(bool), IsStuckToRightChanged));
+        public bool IsStuckToRight
+        {
+            get { return (bool)GetValue(IsStuckToRightProperty); }
+            set { SetValue(IsStuckToRightProperty, value); }
+        }
 
         public static readonly DependencyProperty SliderFillProperty = DependencyProperty.Register(
             "SliderFill", typeof(Brush), typeof(HorizontalRangeSlider), new PropertyMetadata(default(Brush), SliderFillPropertyChanged));
@@ -77,16 +97,12 @@ namespace ChartControls.Controls
             EventManager.RegisterClassHandler(typeof(Window), Window.MouseMoveEvent, new MouseEventHandler(OnMouseMove));
         }
 
+
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             var curType = GetCursorPositionOnSlider();
             if (curType != Dock.Top)
-            {
-                // set drag
-                _isSliderGrabbed = true;
-                _grabType = curType;
-                _mouseDownPoint = Mouse.GetPosition(this);
-            }
+                StartDrag(curType);
 
             base.OnPreviewMouseLeftButtonDown(e);
         }
@@ -101,14 +117,9 @@ namespace ChartControls.Controls
                 if (e.LeftButton == MouseButtonState.Pressed)
                     DragSlider();
                 else
-                {
-                    // reset draging
-                    _isSliderGrabbed = false;
-                    _grabType = Dock.Top;
-                }
+                    StopDrag();
             }
         }
-
 
         protected override void OnRender(DrawingContext drawingContext)
         {
@@ -134,15 +145,20 @@ namespace ChartControls.Controls
         {
             GeometryGroup geometry = new GeometryGroup();
             var range = _valuesFormatter.GetNumberRange(Min, Max);
-            foreach (var point in range)
+            if (range.Count > 0)
             {
-                double x = ConvertToX(point.Key);
-                LineGeometry line = new LineGeometry(new Point(x, 0), new Point(x, this.Height));
-                var text = RangeValuesFormatter.GetFormattedText(point.Value);
-                var textGeo = text.BuildGeometry(new Point(x + _pointsDrawing.Pen.Thickness, (this.Height - text.Height) / 2));
+                geometry.Children.Add(new LineGeometry(new Point(), new Point(this.RenderSize.Width, 0)));
+                foreach (var point in range)
+                {
+                    double x = ConvertToX(point.Key);
+                    double y = this.RenderSize.Height / 4;
+                    LineGeometry line = new LineGeometry(new Point(x, 0), new Point(x, y));
+                    var text = RangeValuesFormatter.GetFormattedText(point.Value);
+                    var textGeo = text.BuildGeometry(new Point(x - text.Width / 2, y));
 
-                geometry.Children.Add(line);
-                geometry.Children.Add(textGeo);
+                    geometry.Children.Add(line);
+                    geometry.Children.Add(textGeo);
+                }
             }
             _pointsDrawing.Geometry = geometry;
         }
@@ -180,6 +196,14 @@ namespace ChartControls.Controls
                 return Dock.Bottom;
             }
             return Dock.Top;
+        }
+
+        private void StartDrag(Dock grabType)
+        {
+            // set drag
+            _isSliderGrabbed = true;
+            _grabType = grabType;
+            _mouseDownPoint = Mouse.GetPosition(this);
         }
 
         private void DragSlider()
@@ -233,9 +257,20 @@ namespace ChartControls.Controls
             }
             else
             {
-                From = newLeft;
-                To = newRight;
+                if (Math.Abs(From - newLeft) > 0)
+                    From = newLeft;
+                if (Math.Abs(To - newRight) > 0)
+                    To = newRight;
             }
+
+            // update proportions of sides
+            if (_saveStuckProportion) _stuckDiff = Math.Abs(From - To);
+        }
+
+        private void StopDrag()
+        {
+            _isSliderGrabbed = false;
+            _grabType = Dock.Top;
         }
 
         private void UpdateSlider()
@@ -250,6 +285,36 @@ namespace ChartControls.Controls
                 var temp = From;
                 From = To;
                 To = temp;
+            }
+
+            // check to reset stuck binding
+            if (Math.Abs(To - Max) > 0 && IsStuckToRight)
+                IsStuckToRight = false;
+            if (Math.Abs(From - Min) > 0 && IsStuckToLeft)
+                IsStuckToLeft = false;
+
+            // save proportion of sides
+            if (_saveStuckProportion && !_isSliderGrabbed)
+            {
+                if (IsStuckToRight && !IsStuckToLeft)
+                    From = To - _stuckDiff;
+                if (IsStuckToLeft && !IsStuckToRight)
+                    To = From + _stuckDiff;
+            }
+
+            // stuck if dragging slider near to side
+            if (_isSliderGrabbed)
+            {
+                if (!IsStuckToRight)
+                {
+                    double diff = Math.Abs(Max - To);
+                    IsStuckToRight = diff <= 1;
+                }
+                if (!IsStuckToLeft)
+                {
+                    double diff = Math.Abs(From - Min);
+                    IsStuckToLeft = diff <= 1;
+                }
             }
 
             x1 = From > Min ? From : Min;
@@ -294,6 +359,13 @@ namespace ChartControls.Controls
             return value;
         }
 
+        protected virtual void OnViewScopeChanged()
+        {
+            ViewScopeChanged?.Invoke(this, new Scope(From, To, double.NaN, double.NaN));
+        }
+
+        #region Dependency properties callbacks
+
         private static void SliderFillPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var slider = (HorizontalRangeSlider)d;
@@ -326,9 +398,44 @@ namespace ChartControls.Controls
             slider.OnViewScopeChanged();
         }
 
-        protected virtual void OnViewScopeChanged()
+        private static void IsStuckToLeftChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ViewScopeChanged?.Invoke(this, new Scope(From, To, 0, 0));
+            var slider = (HorizontalRangeSlider)d;
+            if ((bool)e.NewValue)
+            {
+                Binding binding = new Binding
+                {
+                    Path = new PropertyPath(MinProperty.Name),
+                    Source = slider
+                };
+                slider.SetBinding(FromProperty, binding);
+                // save proportion
+                if (slider._saveStuckProportion)
+                    slider._stuckDiff = Math.Abs(slider.From - slider.To);
+            }
+            else // reset binding
+                slider.From = slider.From;
         }
+
+        private static void IsStuckToRightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var slider = (HorizontalRangeSlider)d;
+            if ((bool)e.NewValue)
+            {
+                Binding binding = new Binding
+                {
+                    Path = new PropertyPath(MaxProperty.Name),
+                    Source = slider
+                };
+                slider.SetBinding(ToProperty, binding);
+                // save proportion
+                if (slider._saveStuckProportion)
+                    slider._stuckDiff = Math.Abs(slider.From - slider.To);
+            }
+            else // reset binding
+                slider.To = slider.To;
+        }
+
+        #endregion
     }
 }

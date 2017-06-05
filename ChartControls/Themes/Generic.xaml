@@ -34,6 +34,8 @@
     <Style TargetType="controls:HorizontalRangeSlider">
         <Setter Property="SliderFill" Value="#A56495ED" />
         <Setter Property="Height" Value="35" />
+        <!--<Setter Property="IsStuckToRight" Value="True" />
+        <Setter Property="IsStuckToLeft" Value="True" />-->
     </Style>
 
 </ResourceDictionary>

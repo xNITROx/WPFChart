@@ -51,8 +51,14 @@ namespace ChartControls
             base.OnApplyTemplate();
             _canvas = this.GetTemplateChild("CHART_CANVAS") as ChartCanvas;
             _horizontalSlider = this.GetTemplateChild("HOR_SLIDER") as HorizontalRangeSlider;
-            if(_horizontalSlider != null)
+            if (_horizontalSlider != null)
                 _horizontalSlider.ViewScopeChanged += HorSlider_ViewScopeChanged;
+        }
+
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            UpdateSeries();
+            base.OnRenderSizeChanged(sizeInfo);
         }
 
         public void UpdateSeries()
@@ -61,9 +67,11 @@ namespace ChartControls
                 return;
 
             List<Drawing> seriesDrawings = new List<Drawing>();
+            _settings.Size = _canvas.RenderSize;
+            var settings = _settings.Clone();
             foreach (var series in Series)
             {
-                var newGeo = series.GetGeometry();
+                var newGeo = series.GetGeometry(settings);
                 if (newGeo == null)
                     continue;
                 seriesDrawings.Add(newGeo);
@@ -95,6 +103,8 @@ namespace ChartControls
 
         private void HorSlider_ViewScopeChanged(object sender, Scope viewScope)
         {
+            _settings.ViewScope.UpdateBy(viewScope);
+            this.UpdateSeries();
         }
     }
 }

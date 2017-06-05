@@ -1,53 +1,55 @@
-﻿using System;
-using System.Collections.Specialized;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Media;
-using ChartControls.Contracts;
 
 namespace ChartControls.CommonModels.Series
 {
     public sealed class LineSeries : ChartSeries
     {
-        private readonly StringBuilder _data = new StringBuilder("M");
-
-
+        public Brush Fill { get; set; } = Brushes.Transparent;
         public Brush Brush { get; set; } = Brushes.Black;
         public double Width { get; set; } = 1;
 
 
-
         public LineSeries()
         {
-            Data.CollectionChanged += Data_CollectionChanged;
-        }
-
-        private void Data_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                var format = Extentions.DefaultFormat;
-                foreach (ISeriesData item in e.NewItems)
-                    _data.Append($" {item.ValueX.ToString(format)},{item.Data[0].ToString(format)}");
-            }
         }
 
 
         protected override Drawing DrawGeometry()
         {
-            Geometry geometry = null;
-            try
+            List<Point> points = new List<Point>();
+            for (int i = 0; i < Data.Count; i++)
             {
-                geometry = Geometry.Parse(_data.ToString());
-                if (geometry.CanFreeze)
-                    geometry.Freeze();
-            }
-            catch (Exception exc)
-            {
-                Console.WriteLine(exc);
+                var seriesData = Data[i];
+                if (ChartSettings.ViewContains(seriesData))
+                    points.Add(ChartSettings.ConvertToPoint(seriesData));
             }
 
+            if (points.Count == 0)
+                return new DrawingGroup();
+
+            var geometry = GetGeometry(points);
             Pen pen = new Pen(Brush, Width);
-            return new GeometryDrawing(Brushes.Transparent, pen, geometry);
+            return new GeometryDrawing(Fill, pen, geometry);
+        }
+
+        private Geometry GetGeometry(List<Point> points)
+        {
+            PathFigure figure = new PathFigure();
+            figure.IsFilled = true;
+            // add Start and End points to correct Fill
+            figure.StartPoint = new Point(-10, ChartSettings.Size.Height);
+            points.Add(new Point(ChartSettings.Size.Width + 10, ChartSettings.Size.Height));
+
+            PolyLineSegment lineSegments = new PolyLineSegment(points, true);
+            figure.Segments.Add(lineSegments);
+
+            PathGeometry pathGeometry = new PathGeometry();
+            pathGeometry.Figures.Add(figure);
+            pathGeometry.Freeze();
+
+            return pathGeometry;
         }
     }
 }

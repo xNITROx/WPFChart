@@ -35,6 +35,19 @@ namespace ChartControls.CommonModels.DataModels
             }
         }
 
+        internal void UpdateBy(Scope scope)
+        {
+            if (!double.IsNaN(scope.MinX))
+                this.MinX = scope.MinX;
+            if (!double.IsNaN(scope.MaxX))
+                this.MaxX = scope.MaxX;
+
+            if (!double.IsNaN(scope.MinY))
+                this.MinY = scope.MinY;
+            if (!double.IsNaN(scope.MaxY))
+                this.MaxY = scope.MaxY;
+        }
+
         public override string ToString()
         {
             return $"X: [{MinX}; {MaxX}], Y: [{MinY}; {MaxY}]";
